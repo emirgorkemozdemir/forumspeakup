@@ -1,0 +1,144 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @RenderSection("AdditionalHeadContent", required: false)
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+          integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.unobtrusive-ajax.js"></script>
+    @*    <script src="/js/index.js"></script>*@
+    <script src="/js/reset.js"></script>
+    <script src="/js/search.js"></script>
+    <title>Forum Speak Up</title>
+    <link rel="icon" href="/images/_ddb4c604-5dd8-4f51-9e25-98e5ae35fbcf-removebg-preview.png">
+</head>
+
+<body>
+    <nav>
+
+        <div class="logo">
+            <a href=""><img src="/images/_ddb4c604-5dd8-4f51-9e25-98e5ae35fbcf-removebg-preview.png" alt=""></a>
+            <H2></H2>
+        </div>
+        <div>
+            @using (Html.BeginForm("Search", "Main", FormMethod.Get))
+            {
+                <input type="text" name="searchParam" placeholder="Aramak istediğiniz içeriği yazınız" />
+                <input type="submit" value="Ara" />
+            }
+        </div>
+
+        @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+        {
+            <ul>
+                <li>
+                    <a href="/User/Logout"><i class="fa-solid fa-right-to-bracket"></i> Çıkış Yap</a>
+                </li>
+
+
+                <li>
+                    <a href="/User/MyProfile">
+                        <i class="fa-solid fa-user"></i>
+                        Profil
+                    </a>
+                </li>
+
+
+                @await Component.InvokeAsync("LMessageBox",new {user_id = Accessor.HttpContext.Session.GetInt32("LoggedID")})
+
+            </ul>
+        }
+        else
+        {
+            <ul>
+                <li>
+                    <a href="/User/Login"><i class="fa-solid fa-right-to-bracket"></i> Giriş</a>
+                </li>
+                <li><a href="/User/Register"><i class="fa-solid fa-user-plus"></i> Kayıt ol</a></li>
+
+            </ul>
+        }
+
+
+    </nav>
+
+    <div class="box">
+
+        @await Component.InvokeAsync("LoadLeftBar")
+
+
+        <div class="right">
+            <section>
+                @RenderBody()
+            </section>
+        </div>
+    </div>
+
+    <br />
+
+    @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+    {
+        <div class="mobilNavbar">
+
+            <ul>
+                <li>
+                    <a href="/Main/index"><i class="fa-solid fa-home"></i><span> Ana Sayfa</span></a>
+                </li>
+                <li id="konuli"><a href="/Main/CreatePostWithAudio"><i class="fa-solid fa-microphone"></i><span> Konu Oluştur</span> </a></li>
+                <li><a href="/User/Logout"><i class="fa-solid fa-right-to-bracket"></i><span> Çıkış Yap</span></a></li>
+            
+            </ul>
+
+        </div>
+    }
+    else
+    {
+        <div class="mobilNavbar">
+
+            <ul>
+             
+                <li><a href="/User/Register"><i class="fa-solid fa-user-plus"></i><span> Kayıt ol</span></a></li>
+                <li>
+                    <a href="/User/Login"><i class="fa-solid fa-right-to-bracket"></i><span> Giriş</span></a>
+                </li>
+
+                <li>
+                    <a href="/Main/index"><i class="fa-solid fa-home"></i><span> Ana Sayfa</span></a>
+                </li>
+
+                <li>
+                    <a href="/Main/LoadAllCategories"><i class="fa-solid fa-book"></i><span> Kategoriler</span></a>
+                </li>
+            </ul>
+
+        </div>
+    }
+ 
+
+    <div id="progress">
+        <span id="progress-value"><i class="fa-solid fa-arrow-alt-circle-up"></i></span>
+    </div>
+
+
+</body>
+
+</html>
+

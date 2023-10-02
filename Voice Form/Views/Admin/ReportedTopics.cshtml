@@ -1,0 +1,50 @@
+﻿@model ReportAdminModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+@foreach(var report in Model.reports)
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Raporlayan Kullanıcı</th>
+                <th>Raporlanan Konu</th>
+                <th>Rapor Tarihi</th>
+                <th>Konuyu Deaktif Hale Getir</th>
+                <th>Raporu Deaktif Hale Getir</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td><a href="@this.Url.Action("GetProfile", "User", new {user_id =report.Reporter})" target="_blank">Tıkla</a></td>
+                <td> <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =report.Reporting})" target="_blank">Tıkla</a></td>
+                <td>@report.ReportDate</td>
+                <td><a href="@this.Url.Action("DeactiveTopic", "Admin", new {topic_id =report.Reporting,report_id=report.ReportId})">Konuyu Deaktif Yap</a></td>
+                <td><a href="@this.Url.Action("DeactiveReport", "Admin", new {report_id=report.ReportId})">Raporu Deaktif Yap</a></td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+
+<div class="pagination">
+    @if (Model.CurrentPage > 1)
+    {
+        <a href="@this.Url.Action("ReportedTopics", "Admin", new {page=Model.CurrentPage-1})">Previous</a>
+    }
+
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a href="@this.Url.Action("ReportedTopics", "Admin", new {page=i})">@i</a>
+    }
+
+    @if (Model.CurrentPage < Model.TotalPages)
+    {
+        <a href="@this.Url.Action("ReportedTopics", "Admin", new {page=Model.CurrentPage+1})">Next</a>
+    }
+</div>

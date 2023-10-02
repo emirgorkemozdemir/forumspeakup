@@ -1,0 +1,58 @@
+﻿@model List<SubNormalCategory>
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+{
+    <a href="@this.Url.Action("CreatePostWithAudio", "Main")">Konu Oluştur</a>
+}
+else
+{
+    <div>Konu oluşturmak için giriş yapınız</div>
+    <br />
+    <div>Konuları takip etmek için giriş yapınız</div>
+}
+<br />
+<a href="/Main/LoadAllCategories">Tüm Konuları Aç</a>
+
+@foreach (var category in Model)
+{
+    <div class="category">
+        <h2>
+            @category.MainCategoryName <a href="" title="Konu Hakkında Bildirimleri Al">
+
+            </a>
+        </h2>
+
+        @foreach (var subcat in category.SubList)
+        {
+
+            @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+            {
+                <br />
+                <a href="@this.Url.Action("FollowCategory", "Main", new {subcat_id =subcat.SubCategoryId})">
+                    Konuyu Takip Et
+                    <span class="bell">
+                        <i class="fa fa-bell"></i>
+                    </span>
+                </a>
+            }
+            else
+            {
+               
+            }
+
+
+            <a href="@this.Url.Action("GetPopularTopicsOfCategory", "Main", new {subcat_id = subcat.SubCategoryId})">
+                <p>
+                    <i class="fa fa-microphone"></i> @subcat.SubCategoryName
+                </p>
+            </a>
+        }
+    </div>
+}

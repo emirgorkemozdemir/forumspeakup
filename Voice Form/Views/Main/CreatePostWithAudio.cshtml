@@ -1,0 +1,80 @@
+﻿@model TableTopic
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Recording</title>
+</head>
+<body>
+    <div>Ses dosyanızı kaydetmenize rağmen yüklenmiyorsa içerisinde istenmeyen (küfür,hakaret vb.) içerik bulunuyor olabilir.</div>
+    <br />
+    <div id="validationdiv">@ViewBag.words_validation</div>
+    <br />
+    <div class="divbtns">
+        <audio id="audioPreview" controls></audio>
+        <button id="recordButton" onclick="startRecording()">Kaydı Başlat</button>
+        <button id="stopButton" onclick="stopRecording()">Kaydı Durdur</button>
+    </div>
+    <br />
+    @using (Html.BeginForm("CreatePostWithAudio", "Main", FormMethod.Post, new { @class = "formform" }))
+    {
+        @Html.AntiForgeryToken()
+        
+        <input asp-for="TopicSharerId" type="hidden" id="useridhidden" value="@Accessor.HttpContext.Session.GetInt32("LoggedID").ToString()" />
+        <input type="hidden" id="audionamehidden"/>
+        <input type="hidden" id="hiddenaudiotext" name="hiddenaudiotext" />
+        @Html.TextBoxFor(t=>t.TopicTitle , new {placeholder="Başlık giriniz" , @class="tbox"})
+        @Html.TextAreaFor(t=>t.TopicContent , new {placeholder="İçerik giriniz", @class="tbox"})
+        @Html.HiddenFor(t=>t.TopicVoiceLink ,new { id = "hiddenVoiceLink" })
+        <select asp-for="TopicCategory" id="categoryDrop" class="dropdownmenu" asp-items="ViewBag.Categories"></select>
+        <br />
+        <select asp-for="TopicSubCategory" id="subCategoryDrop" class="dropdownmenu"></select>
+        <br />
+      
+        <input type="submit" class="mybutton" value="Oluştur" />
+    }
+
+ <br />
+    <a href="@this.Url.Action("CreatePostWithoutAudio", "Main")">Ses kaydetmeden içerik oluşturmak için tıkla</a>
+    <br />
+</body>
+</html>
+
+<script src="/js/audioOperations.js"></script>
+<script>
+    function loadSubCategories() {
+        $('#subCategoryDrop').empty();
+
+
+        var ddlsource = $('#categoryDrop').val();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetSubCategories","Main")",
+            data: { main_id: ddlsource },
+            success: function (data) {
+                $.each(data, function (i, field) {
+                    $("#subCategoryDrop").append('<option value="' + field.subCategoryId + '">' + field.subCategoryName + '</option>');
+                });
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadSubCategories();
+
+        $('#categoryDrop').change(function () {
+            loadSubCategories();
+        });
+    });
+</script>

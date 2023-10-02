@@ -1,0 +1,56 @@
+* {
+	box-sizing: border-box;
+  padding: 0px;
+  margin: 0px;
+}
+
+
+img{
+    height: 100px;
+    width: 100px;
+   
+}
+
+.container{
+    margin-top:2rem ;
+
+}
+
+.none{
+    display: none;
+}
+
+.panel .card-title{
+    cursor: pointer;
+}
+
+
+.inpt{
+  display: none;
+}
+
+textarea{
+height: 100px;
+
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+.visible{
+	display: none;
+}
+
+
+.overlaySearch{
+  z-index: 1111;
+}
+
+.hidden{
+  overflow: hidden;
+}
+
+

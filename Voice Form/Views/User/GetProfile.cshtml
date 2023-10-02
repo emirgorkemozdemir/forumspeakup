@@ -1,0 +1,43 @@
+﻿@model ExtendedProfile
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@if (Model.User.UserActive==true)
+{
+    <content>
+        <img src="@("/images/"+Model.User.UserPp)" />
+        <div>@Model.User.UserName</div>
+        <div>@Model.User.UserCreationDate</div>
+        <div>@Model.User.UserMail</div>
+        <div>@Model.User.UserBio</div>
+    </content>
+
+    <div>
+        En Son Paylaşılanlar
+    </div>
+    @foreach (var shared in Model.shared_list)
+    {
+        <br />
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =shared.TopicId})">@shared.TopicTitle</a>
+    }
+
+    <div>
+        En Son Beğenilenler
+    </div>
+    @foreach (var liked in Model.liked_list)
+    {
+        <br />
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =liked.TopicId})">@liked.TopicTitle</a>
+    }
+
+    <a href="@this.Url.Action("GetAllSharings", "User", new {user_id =Model.User.UserId})">Kullanıcının tüm paylaşımlarını gör</a>
+}
+else
+{
+      <div>Kullanıcı deaktif durumda</div>
+}
+

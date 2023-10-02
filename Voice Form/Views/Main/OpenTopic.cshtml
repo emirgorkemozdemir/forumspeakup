@@ -1,0 +1,264 @@
+﻿@model TopicAndCommentsModel
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@section AdditionalHeadContent {
+    <meta name="description" content="@Model.topic.Topic.TopicTitle @Model.topic.Topic.TopicContent" />
+    <meta name="keywords" content="@Model.topic.Topic.TopicTitle" />
+}
+
+@if (@Accessor.HttpContext.Session.GetInt32("LoggedID") == Model.topic.Topic.TopicSharerId)
+{
+    <a href="@this.Url.Action("DeactiveJustTopic", "Admin", new {topic_id =Model.topic.Topic.TopicId,sender_id=Model.topic.Topic.TopicSharerId})">Konuyu Deaktif Yap</a>
+    <br />
+}
+else
+{
+    <div>Konu size aitse ve silmek istiyorsanız konuyu attığınız hesabınıza giriş yapıp bu konuyu tekrar açınız. Silme seçeneği aktif olacaktır.</div>
+    <br />
+}
+
+
+
+<input id="hidden_topic_id" type="hidden" value="@Model.topic.Topic.TopicId" />
+<input id="hidden_order_key" type="hidden" value="@Model.OrderKey" />
+<br />
+
+
+<div>
+    @Model.topic.Topic.TopicTitle
+</div>
+<audio src="@Model.topic.Topic.TopicVoiceLink" controls></audio>
+<br />
+<br />
+<div>
+    @Model.topic.Topic.TopicContent
+</div>
+
+<br />
+<div>
+    <div id="mylikes">
+        @Model.topic.Topic.TopicLikes Beğeni
+    </div>
+    @Model.topic.Topic.TopicDate
+    <a href="@this.Url.Action("GetProfile", "User", new {user_id=Model.topic.User.UserId})">
+        @Model.topic.Topic.TopicSharer.UserName
+    </a>
+</div>
+
+<br />
+
+
+<br />
+@if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+{
+    <button type="button" class="btn btn-primary" onClick="LikeTopic();">Konuyu Beğen</button>
+    <br />
+}
+else
+{
+    <div>
+        Konuyu beğenmek giriş yapınız.
+    </div>
+    <br />
+}
+
+@if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+{
+    <a href="@this.Url.Action("ReportPost", "Main", new {user_id=@Accessor.HttpContext.Session.GetInt32("LoggedID"),reporting_id=Model.topic.Topic.TopicId})">
+        Konuyu şikayet et
+       
+    </a>
+    <br />
+}
+else
+{
+    <div>
+        Konuyu şikayet etmek için giriş yapınız.
+      
+    </div>
+    <br />
+}
+
+<br />
+<br />
+<hr />
+
+@if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+{
+    <br />
+    <h2>Yorum Yap</h2>
+    <h3>Ses kaydetmeden sadece yazı yazarak ses dosyası eklemeden de yorum yapabilirsiniz.</h3>
+    <div id="validationdiv">@ViewBag.words_validation</div>
+    <div class="divbtns">
+        <audio id="audioPreview" controls></audio>
+        <button id="recordButton" onclick="startRecording()">Kayda Başla</button>
+        <button id="stopButton" onclick="stopRecording()">Kaydı Durdur</button>
+
+    </div>
+    @using (Html.BeginForm("SendComment", "Main", FormMethod.Post, new { @class = "formform" }))
+    {
+        
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" id="useridhidden" name="commenterid" value="@Accessor.HttpContext.Session.GetInt32("LoggedID").ToString()" />
+        <input type="hidden" id="audionamehidden" />
+        <input type="hidden" id="hiddenaudiotext" name="hiddenaudiotext" />
+        <input type="hidden" id="hiddenaudiotext" name="topicid" value="@Model.topic.Topic.TopicId" />
+        <input type="text" id="commentcontent" class="tbox" name="commentcontent" placeholder="İçerik giriniz" />
+        <input type="text" id="hiddenvoicelink" class="tbox" name="hiddenvoicelink" placeholder="İçerik giriniz" />
+        <input type="submit" class="mybutton" value="Oluştur" />
+        <br/>
+    }
+    <br />
+    <hr />
+}
+else
+{
+    <div>
+        Yorum yapmak için giriş yapınız.
+    </div>
+}
+
+
+
+<a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage,order_key="descending"})">
+    Yeniden Eskiye
+    <br />
+</a>
+
+<a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage,order_key="ascending"})">
+    Eskiden Yeniye
+    <br />
+</a>
+
+<a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage,order_key="liked"})">
+    En Çok Beğenilen
+    <br />
+</a>
+
+<a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage,order_key="suggested"})">
+    Önerilen
+    <br />
+</a>
+
+<hr />
+
+@foreach (var comment in Model.comments)
+{
+    <br />
+    <div>
+
+        @if (comment.Comment.CommentVoiceLink!="")
+        {
+            <audio src="@comment.Comment.CommentVoiceLink" controls></audio>
+        }
+        
+        <br/>
+        <br/>
+        <div>
+            @comment.Comment.CommentContent
+        </div>
+        <br/>
+        <div>
+            @{
+                var my_comment_id = "commentlike" + comment.Comment.CommentId;
+            }
+            <div id="@my_comment_id">
+                @comment.Comment.CommentLike Beğeni
+            </div>
+            @comment.Comment.CommentDate
+            <a href="@this.Url.Action("GetProfile", "User", new {user_id=comment.User.UserId})">
+                @comment.User.UserName
+            </a>
+        </div>
+
+        
+       <br/>
+        @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+        {
+            <button type="button" class="btn btn-primary" onClick="LikeComment(@comment.Comment.CommentId);">Yorumu Beğen</button>
+        }
+        else
+        {
+            <div>
+                Yorumu beğenmek giriş yapınız.
+            </div>
+        }
+
+        <br/>
+        @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+        {
+            <a href="@this.Url.Action("ReportComment", "Main", new {user_id=@Accessor.HttpContext.Session.GetInt32("LoggedID"),reporting_id=comment.Comment.CommentId})">
+                Yorumu şikayet et
+                <br />
+            </a>
+        }
+        else
+        {
+            <div>
+                Yorumu şikayet etmek için giriş yapınız.
+                <br />
+                <br/>
+                <br/>
+            </div>
+        }
+    </div>
+    <hr />
+}
+
+
+
+<div class="pagination">
+    @if (Model.CurrentPage > 1)
+    {
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage-1,order_key=@Model.OrderKey})">Previous</a>
+    }
+
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=i,order_key=@Model.OrderKey})">@i</a>
+    }
+
+    @if (Model.CurrentPage < Model.TotalPages)
+    {
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =Model.topic.Topic.TopicId,page=Model.CurrentPage+1,order_key=@Model.OrderKey})">Next</a>
+    }
+</div>
+
+<script src="/js/audioOperations.js"></script>
+<script>
+    function LikeTopic() {
+        $.ajax({
+            url: "@Url.Action("LikeTopic", "Main")",
+            type: "POST",
+            data: { topic_id: $("#hidden_topic_id").val() },
+            success: function (response) {
+                $('#mylikes').text(response);
+            },
+            error: function () {
+                alert("Ajax Fail");
+            }
+        });
+    }
+
+    function LikeComment(commentID) {
+        $.ajax({
+            url: "@Url.Action("LikeComment", "Main")",
+            type: "POST",
+            data: { comment_id: commentID },
+            success: function (response) {
+                let myeditedid = "#commentlike" + commentID
+                $(myeditedid).text(response);
+            },
+            error: function () {
+                alert("Ajax Fail");
+            }
+        });
+    }
+</script>

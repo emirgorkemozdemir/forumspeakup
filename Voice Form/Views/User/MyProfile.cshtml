@@ -1,0 +1,58 @@
+﻿@model ExtendedProfile
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@if (Model.User.UserActive == true)
+{
+    <content>
+        <img src="@("/images/"+Model.User.UserPp)" />
+        <div>@Model.User.UserName</div>
+        <div>@Model.User.UserCreationDate</div>
+        <div>@Model.User.UserMail</div>
+        <div>@Model.User.UserBio</div>
+    </content>
+
+    <br />
+    <div>
+        En Son Paylaşılanlar
+    </div>
+
+    @foreach (var shared in Model.shared_list)
+    {
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =shared.TopicId})">@shared.TopicTitle</a>
+        <br/>
+    }
+
+    <br />
+    <br />
+    <div>
+        En Son Beğenilenler
+    </div>
+
+    @foreach (var liked in Model.liked_list)
+    {
+        <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =liked.TopicId})">@liked.TopicTitle</a>
+        <br/>
+    }
+    <br />
+    <br />
+
+    <br />
+    <a href="/User/ChangePP">Profil Fotoğrafı Değiştir</a>
+    <br />
+    <a href="/User/ChangeBio">Bio Değiştir</a>
+    <br />
+    <a href="@this.Url.Action("GetAllSharings", "User", new {user_id =Model.User.UserId})">Tüm paylaşımlarımı gör</a>
+    <br />
+    <a href="/User/DeleteMyAccount">Hesabımı Silmek İstiyorum</a>
+
+
+}
+else
+{
+    <div>Kullanıcı Deaktif Durumda</div>
+}

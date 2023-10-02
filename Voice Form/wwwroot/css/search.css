@@ -1,0 +1,59 @@
+.card {
+    width: 200px;
+    height: 300px;
+    background: lightblue;
+    border: 1px solid black;
+    margin: 20px;
+    position: relative;
+  }
+  
+  .card:hover {
+    height: 400px;
+  }
+  
+  .card-content {
+    width: 180px;
+    height: 280px;
+    background: white;
+    margin: 10px;
+    position: absolute;
+    bottom: 0;
+  }
+  
+  .card-content:hover {
+    height: 380px;
+  }
+  
+  .card-title {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+  }
+  
+  .card-text {
+    font-size: 16px;
+    padding: 10px;
+  }
+  
+  .card-text p {
+    display: none; /* metni gizle */
+  }
+  
+  .card:hover .card-text p {
+     display: block; /* metni göster */
+     -webkit-transition-delay: .5s; /* geçiş gecikmesi */
+     transition-delay: .5s; /* geçiş gecikmesi */
+  }
+  
+
+
+nav {
+    display: flex;
+    justify-content: center;
+
+
+}
+
+nav ul li {
+    display: none;
+}

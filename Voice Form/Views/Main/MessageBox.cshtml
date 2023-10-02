@@ -1,0 +1,31 @@
+﻿@model NotifMessageBoxModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@foreach (var notif in Model.Notifs)
+{
+    <div>
+        @{
+           var list = notif.NotificationContent.Split('|');
+            <a href="@this.Url.Action("ReadNotifAndRedirectToOpenTopic", "Main", new {topic_id =list[0],notif_id=notif.NotificationId})">@list[1] isimli kategoriye @list[2] isimli konu eklendi açmak için tıkla.</a>
+        }
+        
+        <a href="@this.Url.Action("ReadNotif", "Main", new {notif_id =notif.NotificationId})">Okundu Olarak İşaretle</a>
+    </div>
+    <br />
+}
+
+@if(Model.NotifKey == "passive")
+{
+    <br />
+    <a href="@this.Url.Action("MessageBox", "Main", new {notif_key ="active"})">Yeni Bildirimleri Görmek İçin Tıkla</a>
+}
+else
+{
+    <br />
+    <a href="@this.Url.Action("MessageBox", "Main", new {notif_key ="passive"})">Okunmuş Eski Bildirimleri Görmek İçin Tıkla</a>
+}

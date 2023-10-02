@@ -1,0 +1,48 @@
+﻿@model CommentReportAdminModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+@foreach (var report in Model.reports)
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Raporlayan Kullanıcı</th>
+                <th>Raporlanan Yorum</th>
+                <th>Rapor Tarihi</th>
+                <th>Yorumu Aktif Hale Getir</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td><a href="@this.Url.Action("GetProfile", "User", new {user_id =report.ReportCommentReporter})" target="_blank">Tıkla</a></td>
+                <td> <a href="@this.Url.Action("OpenSingleCommentAdmin", "Admin", new {comment_id =report.ReportCommentReporting})" target="_blank">Tıkla</a></td>
+                <td>@report.ReportCommentDate</td>
+                <td><a href="@this.Url.Action("ActivateComment", "Admin", new {comment_id =report.ReportCommentReporting})">Yorumu Aktif Yap</a></td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+
+<div class="pagination">
+    @if (Model.CurrentPage > 1)
+    {
+        <a href="@this.Url.Action("ReportedDeactiveComments", "Admin", new {page=Model.CurrentPage-1})">Previous</a>
+    }
+
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <a href="@this.Url.Action("ReportedDeactiveComments", "Admin", new {page=i})">@i</a>
+    }
+
+    @if (Model.CurrentPage < Model.TotalPages)
+    {
+        <a href="@this.Url.Action("ReportedDeactiveComments", "Admin", new {page=Model.CurrentPage+1})">Next</a>
+    }
+</div>

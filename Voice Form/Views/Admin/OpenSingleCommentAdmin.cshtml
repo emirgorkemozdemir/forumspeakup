@@ -1,0 +1,10 @@
+﻿@model TableComment
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<audio src="@Model.CommentVoiceLink" controls></audio>
+<div>@Model.CommentContent</div>
+<a href="@this.Url.Action("GetProfile", "User", new {user_id =Model.CommentSenderId})" target="_blank">Göndereni Görüntüle</a>

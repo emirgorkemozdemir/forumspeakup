@@ -1,0 +1,32 @@
+﻿@model List<SubNormalCategory>
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+@foreach (var category in Model)
+{
+    <div>
+        <a href="#">
+            @category.MainCategoryName
+        </a>
+
+        @foreach (var subcat in category.SubList)
+        {
+            <a href="@this.Url.Action("GetPopularTopicsOfCategory", "Main", new {subcat_id =subcat.SubCategoryId})">
+                <div>@subcat.SubCategoryName</div>
+            </a>
+            @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+            {
+                <a href="@this.Url.Action("FollowCategory", "Main", new {subcat_id =subcat.SubCategoryId})">Takip</a>
+            }
+            else
+            {
+                <div>Konuyu takip etmek için giriş yapınız</div>
+            }
+        }
+    </div>
+}

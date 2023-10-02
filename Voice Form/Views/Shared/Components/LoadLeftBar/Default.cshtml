@@ -1,0 +1,40 @@
+﻿@model List<TableTopic>
+@inject IHttpContextAccessor Accessor
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+          integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.unobtrusive-ajax.js"></script>
+</head>
+<aside class="left">
+        <div class="mytopickeydiv">
+            <a href="/Main/SetLeftBarKey?load_topics_key=latest">En Son</a>
+            <a href="/Main/SetLeftBarKey?load_topics_key=trends">Gündem</a>
+            <a href="/Main/index">Konular</a>
+        </div>
+        @if (@Accessor.HttpContext.Session.GetInt32("LoggedID") != null)
+        {
+            <a href="@this.Url.Action("CreatePostWithAudio", "Main")">
+            <div class="refresh-container">
+                <button class="refresh">Konu Oluştur</button>
+            </div>
+            </a>
+        }
+        else
+        {
+        }
+    <div class="aside-content">
+        @foreach (var topic in Model)
+        {
+            <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =topic.TopicId})">
+                <p style="margin-left:5px">
+                    @topic.TopicTitle
+                </p>
+            </a>
+                     
+        }
+    </div>
+
+</aside>

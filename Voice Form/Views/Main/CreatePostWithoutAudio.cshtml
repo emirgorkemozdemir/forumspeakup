@@ -1,0 +1,67 @@
+﻿@model TableTopic
+@inject IHttpContextAccessor Accessor
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Recording</title>
+</head>
+<body>
+    <div id="validationdiv">@ViewBag.words_validation</div>
+    @using (Html.BeginForm("CreatePostWithoutAudio", "Main", FormMethod.Post, new { @class = "formform" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <input asp-for="TopicSharerId" type="hidden" id="useridhidden" value="@Accessor.HttpContext.Session.GetInt32("LoggedID").ToString()" />
+        <input type="hidden" id="audionamehidden" />
+        @Html.TextBoxFor(t=>t.TopicTitle , new {placeholder="Başlık giriniz" , @class="tbox"})
+        @Html.TextBoxFor(t=>t.TopicContent , new {placeholder="İçerik giriniz" , @class="tbox"})
+        
+        <select asp-for="TopicCategory" id="categoryDrop" class="dropdownmenu" asp-items="ViewBag.Categories"></select>
+        <br />
+        <select asp-for="TopicSubCategory" class="dropdownmenu" id="subCategoryDrop" name="subCategoryDrop"></select>
+        <br />
+        <input type="submit" class="mybutton" value="Oluştur" />
+    }
+
+    <a href="@this.Url.Action("CreatePostWithAudio", "Main")">Ses kaydederek içerik oluşturmak için tıkla</a>
+
+</body>
+</html>
+
+<script>
+    function loadSubCategories() {
+        $('#subCategoryDrop').empty();
+
+
+        var ddlsource = $('#categoryDrop').val();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetSubCategories","Main")",
+            data: { main_id: ddlsource },
+            success: function (data) {
+                $.each(data, function (i, field) {
+                    $("#subCategoryDrop").append('<option value="' + field.subCategoryID + '">' + field.subCategoryName + '</option>');
+                });
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadSubCategories();
+
+        $('#categoryDrop').change(function () {
+            loadSubCategories();
+        });
+    });
+</script>

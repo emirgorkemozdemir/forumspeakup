@@ -1,0 +1,16 @@
+﻿@model List<TableTopic>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "myLayout";
+}
+<div class="category">
+    @foreach (var topic in Model)
+    {
+        <p>
+            <a href="@this.Url.Action("OpenTopic", "Main", new {topic_id =topic.TopicId})">@topic.TopicTitle</a>
+        </p>
+      
+    }
+</div>

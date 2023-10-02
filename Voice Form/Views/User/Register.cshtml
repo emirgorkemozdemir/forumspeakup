@@ -1,0 +1,68 @@
+﻿@model TableUser
+@using AspNetCore.ReCaptcha
+@addTagHelper *, AspNetCore.ReCaptcha
+@*
+
+*@
+@{
+    Layout = null;
+
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="~/css/Register.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Forum Speak Up Kayıt Ol</title>
+</head>
+
+
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-in-container">
+            @using (Html.BeginForm("Register", "User", FormMethod.Post, new { @class = "regform" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <h2>Kayıt Ol</h2>
+                <h3>Hala Kayıt olmadın mı?</h3>
+
+                <div class="validationMessage">@ViewBag.validateError</div>
+
+                @Html.TextBoxFor(m=>m.UserMail , new { placeholder = "Mail adresinizi giriniz" , @class="tbox" } )
+                @Html.ValidationMessageFor(m=>m.UserMail)
+
+                @Html.TextBoxFor(m=>m.UserName , new { placeholder = "Kullanıcı adınızı giriniz" , @class="tbox" } )
+                @Html.ValidationMessageFor(m=>m.UserName)
+
+                @Html.PasswordFor(m=>m.UserPassword , new {  placeholder = "Şifrenizi giriniz" , @class="tbox"} )
+                @Html.ValidationMessageFor(m=>m.UserPassword)
+
+                <input type="password" placeholder="Şifrenizi tekrar giriniz" class="tbox" name="tboxPasswordControl" />
+                <label> Gizlilik ve Güvenlik<a href='@this.Url.Action("SecurityPolicy", "User")' target='_blank'> tıklayınız.</a></label>
+                <a href='@this.Url.Action("Login", "User")'>Kayıtlıysanız giriş yapmak için tıklayınız.</a>
+
+
+                @Html.ReCaptcha()
+
+                <input type="submit" class="mybutton" value="Kayıt Ol" />
+
+            }
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+
+                <div class="overlay-panel overlay-right">
+                    <h1>Forumspeakup</h1>
+                    <h2>Globalde İlk Sesli Forum Sitesi</h2>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>

@@ -1,0 +1,61 @@
+﻿@model TableUser
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+
+}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/Login.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Forum Speak Up Giriş Yap</title>
+</head>
+
+
+<body>
+
+   
+    <section class="container" id="container">
+        <section class="form-container sign-in-container">
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { @class = "loginForm" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <h1>Giriş Yap</h1>
+
+                <div class="validationMessage">@ViewBag.validateError</div>
+
+                @Html.TextBoxFor(m=>m.UserName , new { placeholder = "Kullanıcı adınızı giriniz" , @class="tbox" } )
+                @Html.ValidationMessageFor(m=>m.UserName)
+
+
+                @Html.PasswordFor(m=>m.UserPassword , new {  placeholder = "Şifrenizi giriniz" , @class="tbox"} )
+                @Html.ValidationMessageFor(m=>m.UserPassword)
+
+            
+                <a href='@this.Url.Action("ForgotPasswordSendMailMiddle", "User")'>Şifremi unuttum</a>
+
+                <input type="submit" class="mybutton" value="Giriş Yap" />
+
+            }
+        </section>
+
+        <div class="overlay-container">
+            <div class="overlay">
+
+                <div class="overlay-panel overlay-right">
+                    <h1>Merhaba!</h1>
+                    <p>Voice Forum Hesabın yok mu?</p>
+                    <a class="mybutton" href='@this.Url.Action("Register", "User")'>Kayıt olmak için tıklayınız.</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
