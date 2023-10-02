@@ -40,7 +40,7 @@ public partial class VoiceFormContext : DbContext
     public virtual DbSet<TableUser> TableUsers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=94.138.197.30;Database=forumspeakupdb;user=emiradmin;password=SelinEmir123!;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("server infos");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
