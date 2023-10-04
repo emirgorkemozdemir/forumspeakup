@@ -87,8 +87,7 @@ namespace DataAccessLayer.Concrete
         {
             using (VoiceFormContext my_context = new VoiceFormContext())
             {
-                var admin = my_context.TableUsers.FirstOrDefault(a => a.UserName == my_user.UserName && my_user.UserName == "emirozdemiradmin" && a.UserPassword == my_user.UserPassword);
-                return admin;
+               // user admin code is hidden
             }
         }
 
